@@ -40,40 +40,45 @@ namespace ParallelSynopsis
 
                         foreach (var image in document.QuerySelectorAll("img"))
                         {
-                            var src = image.GetAttribute("src");
-
-                            if (src != null)
+                            if (!cancellationToken.IsCancellationRequested)
                             {
 
-                                Uri uri = null;
+                                var src = image.GetAttribute("src");
 
-                                if (IsAbsoluteUrl(src))
-                                {
-                                    uri = new Uri(src);
-                                }
-                                else
-                                {
-                                    uri = new Uri(new Uri(page.Url), src);
-                                }
-
-                                if (uri.Scheme == Uri.UriSchemeHttp || uri.Scheme == Uri.UriSchemeHttps)
+                                if (src != null)
                                 {
 
-                                    var extension = System.IO.Path.GetExtension(uri.AbsoluteUri);
+                                    Uri uri = null;
 
-                                    if (!string.IsNullOrWhiteSpace(extension))
+                                    if (IsAbsoluteUrl(src))
+                                    {
+                                        uri = new Uri(src);
+                                    }
+                                    else
+                                    {
+                                        uri = new Uri(new Uri(page.Url), src);
+                                    }
+
+                                    if (uri.Scheme == Uri.UriSchemeHttp || uri.Scheme == Uri.UriSchemeHttps)
                                     {
 
-                                        var path = @"c:\temp\" + Guid.NewGuid().ToString() + extension.Split('?')[0];
+                                        var extension = System.IO.Path.GetExtension(uri.AbsoluteUri);
 
-                                        client.DownloadFile(new Uri(uri.AbsoluteUri), path);
+                                        if (!string.IsNullOrWhiteSpace(extension))
+                                        {
 
-                                        Console.WriteLine("Downloaded image: " + path);
+                                            var path = @"c:\temp\" + Guid.NewGuid().ToString() +
+                                                       extension.Split('?')[0];
+
+                                            client.DownloadFile(new Uri(uri.AbsoluteUri), path);
+
+                                            Console.WriteLine("Downloaded image: " + path);
+                                        }
                                     }
+
+
+                                    Thread.Sleep(1000);
                                 }
-
-
-                                Thread.Sleep(1000);
                             }
                         }
                     }

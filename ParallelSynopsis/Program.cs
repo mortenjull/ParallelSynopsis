@@ -61,7 +61,24 @@ namespace ParallelSynopsis
                 tasks.Add(task);
             }
 
+            Console.WriteLine("Press enter to cancel.");
+            Console.ReadLine();
+
+            cancellationTokenSource.Cancel();
+
             Task.WaitAll(tasks.ToArray());
+
+            Console.WriteLine();
+            Console.WriteLine("List of visited pages and number of seen.");
+
+            foreach (var visit in visited)
+            {
+                Console.WriteLine("Visited: " + visit.Key + " seen: " + visit.Value);
+            }
+
+            Console.WriteLine();
+            Console.WriteLine("Press enter to exit.");
+            Console.ReadLine();
         }
         
     }
